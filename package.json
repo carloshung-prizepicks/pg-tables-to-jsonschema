@@ -8,6 +8,7 @@
     "pgtables2jsonschema": "./lib/cli.js"
   },
   "scripts": {
+    "start": "node ./lib/cli.js --config ./predict-picks-dev-config.json",
     "build:compile": "tsc -b --verbose",
     "build": "npm-run-all build:compile",
     "clean": "rimraf lib",
@@ -45,6 +46,7 @@
     "@types/jsonfile": "^6.0.0",
     "@types/lodash": "^4.14.168",
     "@types/mkdirp": "^1.0.1",
+    "@types/pg": "^8.6.6",
     "@types/prompts": "^2.0.9",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
@@ -63,7 +65,8 @@
     "jsonfile": "^6.1.0",
     "lodash": "^4.17.20",
     "mkdirp": "^1.0.4",
-    "pg-structure": "^7.4.0",
+    "pg-structure": "^7.14.0",
+    "pg-tables-to-jsonschema": "^1.0.5",
     "prompts": "^2.4.0"
   }
 }

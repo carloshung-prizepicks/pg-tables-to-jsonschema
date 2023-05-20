@@ -1,0 +1,21 @@
+{
+  "pg": {
+    "host": "localhost",
+    "database": "predict-picks-dev",
+    "user": "postgres",
+    "password": "root"
+  },
+  "input": {
+    "schemas": ["public"],
+    "exclude": [],
+    "include": ["projections"]
+  },
+  "output": {
+    "additionalProperties": false,
+    "baseUrl": "",
+    "defaultDescription": "",
+    "indentSpaces": 2,
+    "outDir": "json-schemas",
+    "unwrap": false
+  }
+}
