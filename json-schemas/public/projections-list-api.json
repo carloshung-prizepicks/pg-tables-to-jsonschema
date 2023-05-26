@@ -1,0 +1,233 @@
+{
+  "$schema": "http://json-schema.org/draft/schema#",
+  "$id": "projections.json",
+  "title": "projections",
+  "type": "object",
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "type",
+            "attributes"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "number"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "projection"
+              ]
+            },
+            "attributes": {
+              "type": "object",
+              "required": [
+                "id",
+                "new_player_id",
+                "line_score",
+                "created_at",
+                "updated_at"
+              ],
+              "properties": {
+                "id": {
+                  "type": "number"
+                },
+                "new_player_id": {
+                  "type": "number"
+                },
+                "line_score": {
+                  "type": "number"
+                },
+                "risk_exposure": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "start_time": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time",
+                  "default": null
+                },
+                "description": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "status": {
+                  "type": "number",
+                  "default": 0
+                },
+                "score_id": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "board_time": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time",
+                  "default": null
+                },
+                "rank": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "league_id": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "is_promo": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "end_time": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time",
+                  "default": null
+                },
+                "tv_channel": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "starting_pitcher": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "subleague_id": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "position_id": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "duration_id": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "game_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "stat_type_id": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "projection_type_id": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "refundable": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "flash_sale_line_score": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "custom_image": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "default": null
+                },
+                "lock_version": {
+                  "type": "number",
+                  "default": 0
+                },
+                "board_error_start": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time",
+                  "default": null
+                },
+                "board_error_end": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time",
+                  "default": null
+                },
+                "board_error_reason_id": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
