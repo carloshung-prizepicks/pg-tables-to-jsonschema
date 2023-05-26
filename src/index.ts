@@ -5,6 +5,7 @@ import jsonfile from 'jsonfile';
 import mkdirp from 'mkdirp';
 import pgStructure, { Column, Entity, Schema } from 'pg-structure';
 import { IConfiguration } from './config';
+import * as fs from 'fs';
 
 export class SchemaConverter {
 
@@ -229,14 +230,25 @@ export class SchemaConverter {
     const entityName = entity.name;
     const baseName = entityName.replace( `${schemaName}_`, '' );
     const jsonSchema: JSONSchema7 = {
-      additionalProperties,
       $schema: 'http://json-schema.org/draft-07/schema#',
-      $id: `${baseUrl}/${schemaName}/${entityName}.json`,
+      $id: `${entityName}.json`,
       title: baseName,
-      description: entity.comment || defaultDescription,
-      properties: {},
-      required: [],
       type: 'object',
+      required: [],
+      properties: {},
+    };
+
+    // define json api schema
+    const jsonApiSchema: JSONSchema7 = {
+      $schema: 'http://json-schema.org/draft-07/schema#',
+      $id: `${entityName}.json`,
+      title: baseName,
+      type: 'object',
+      required: [ 'data' ],
+      properties: {
+        data: {
+        }
+      }
     };
 
     const columns = entity.columns;
@@ -246,14 +258,35 @@ export class SchemaConverter {
 
       (jsonSchema.properties as {[key: string]: JSONSchema7Definition})[columnName] = {
         ...this.convertColumnType({ column }) as Record<string, unknown>,
-        description: `${column.comment || defaultDescription}. Database type: ${columnType}. Default value: ${column.default}`,
+        ...this.convertDefaultValue({ column }) as Record<string, unknown>,
         maxLength: column.length,
       };
 
       // Check if the column is required
       //
-      if (column.notNull && !column.default) {
+      if (column.notNull) {
         (jsonSchema.required as string[]).push(columnName);
+      }
+    }
+
+    // Set json api schema
+    (jsonApiSchema.properties as {[key: string]: JSONSchema7Definition})['data'] = {
+      type: 'object',
+      required: [ 'id', 'type', 'attributes' ],
+      properties: {
+        id: {
+          type: 'string',
+          format: 'number'
+        },
+        type: {
+          type: 'string',
+          enum: [ this.convertPlurarlToSingularWord(baseName) ]
+        },
+        attributes: {
+          type: 'object',
+          required: jsonSchema.required,
+          properties: jsonSchema.properties
+        }
       }
     }
 
@@ -262,8 +295,13 @@ export class SchemaConverter {
     if (outputFolder) {
       const folderName = join(outputFolder, schemaName);
       await mkdirp(folderName);
-      const fileName = join(folderName, `${entityName}.json`);
+      let fileName = join(folderName, `${entityName}.json`);
       await jsonfile.writeFile(fileName, jsonSchema, { spaces: indentSpaces });
+      fileName = join(folderName, `${entityName}-api.json`);
+      await jsonfile.writeFile(fileName, jsonApiSchema, { spaces: indentSpaces });
+      fileName = join(folderName, `${entityName}-rswag.rb`);
+      const rubyHash = this.convertJsonToRubyHash(jsonApiSchema, indentSpaces);
+      await fs.writeFileSync(fileName, rubyHash);
     }
 
     return jsonSchema;
@@ -300,6 +338,9 @@ export class SchemaConverter {
       case 'text':
       {
         const typeDef: JSONSchema7Definition = { type: 'string', maxLength: column.length };
+        if (!column.notNull && column.default == null) {
+          typeDef['type'] = ['string', 'null'];
+        }
         if (isArray) {
           return { type: 'array', items: typeDef };
         }
@@ -309,6 +350,9 @@ export class SchemaConverter {
       case 'uuid':
       {
         const typeDef: JSONSchema7Definition = { type: 'string', format: 'uuid', maxLength: column.length };
+        if (!column.notNull && column.default == null) {
+          typeDef['type'] = ['string', 'null'];
+        }
         if (isArray) {
           return { type: 'array', items: typeDef };
         }
@@ -318,6 +362,9 @@ export class SchemaConverter {
       case 'date':
       {
         const typeDef: JSONSchema7Definition = { type: 'string', format: 'date', maxLength: column.length };
+        if (!column.notNull && column.default == null) {
+          typeDef['type'] = ['string', 'null'];
+        }
         if (isArray) {
           return { type: 'array', items: typeDef };
         }
@@ -328,6 +375,9 @@ export class SchemaConverter {
       case 'time without time zone':
       {
         const typeDef: JSONSchema7Definition = { type: 'string', format: 'time', maxLength: column.length };
+        if (!column.notNull && column.default == null) {
+          typeDef['type'] = ['string', 'null'];
+        }
         if (isArray) {
           return { type: 'array', items: typeDef };
         }
@@ -339,6 +389,9 @@ export class SchemaConverter {
       case 'timestamp':
       {
         const typeDef: JSONSchema7Definition = { type: 'string', format: 'date-time', maxLength: column.length };
+        if (!column.notNull && column.default == null) {
+          typeDef['type'] = ['string', 'null'];
+        }
         if (isArray) {
           return { type: 'array', items: typeDef };
         }
@@ -348,6 +401,9 @@ export class SchemaConverter {
       case 'boolean':
       {
         const typeDef: JSONSchema7Definition = { type: 'boolean' };
+        if (!column.notNull && column.default == null) {
+          typeDef['type'] = ['boolean', 'null'];
+        }
         if (isArray) {
           return { type: 'array', items: typeDef };
         }
@@ -365,6 +421,9 @@ export class SchemaConverter {
       case 'smallint':
       {
         const typeDef: JSONSchema7Definition = { type: 'number', maxLength: column.length };
+        if (!column.notNull && column.default == null) {
+          typeDef['type'] = ['number', 'null'];
+        }
         if (isArray) {
           return { type: 'array', items: typeDef };
         }
@@ -375,6 +434,9 @@ export class SchemaConverter {
       case 'jsonb':
       {
         const typeDef: JSONSchema7Definition = { type: 'object', properties: {} };
+        if (!column.notNull && column.default == null) {
+          typeDef['type'] = ['object', 'null'];
+        }
         if (isArray) {
           return { type: 'array', items: typeDef };
         }
@@ -420,5 +482,137 @@ export class SchemaConverter {
         return { type: 'null' };
       }
     }
+  }
+
+  /**
+   * Helper method to convert a postgresql column default to a json-schema default value
+   * and format
+   *
+   * @private
+   * @param {{
+   *       column: Column,
+   *     }} {
+   *       column,
+   *     }
+   * @returns {Partial<JSONSchema7Definition>}
+   */
+  private convertDefaultValue(
+    {
+      column,
+    } : {
+      column: Column,
+    }
+  ) : JSONSchema7Definition {
+    const columnType = column.type.name;
+    const isArray = column.arrayDimension > 0;
+    let defaultValue = column.default;
+
+    const defaultDef: JSONSchema7Definition = { default: undefined };
+    if (column.notNull) {
+      return defaultDef;
+    }
+
+    if (defaultValue != null) {
+      switch(columnType) {
+        case 'json':
+        case 'jsonb':
+        case 'interval':
+          defaultDef['maxLength'] = column.length;
+          break;
+        case 'boolean':
+          defaultDef['maxLength'] = column.length;
+          defaultValue = !!column.default;
+          break;
+        case 'bigint':
+        case 'decimal':
+        case 'double precision':
+        case 'float8':
+        case 'int':
+        case 'integer':
+        case 'numeric':
+        case 'real':
+        case 'smallint':
+          defaultValue = +defaultValue;
+          break;
+        default:
+          defaultValue = null;
+          break;
+      }
+    }
+
+    defaultDef['default'] = defaultValue;
+    return defaultDef;
+  }
+
+  // convert json to ruby hash with indentation
+  private convertJsonToRubyHash(json: any, indentSize = 2, indentLevel = 1): string {
+    const indent = ' '.repeat(indentSize * indentLevel);
+    let rubyHash = '{\n';
+
+    const keys = Object.keys(json);
+    for (const key of keys) {
+      if (["$schema", "$id", "title"].includes(key)) {
+        continue;
+      }
+      const value = json[key];
+      if (value === undefined) {
+        continue;
+      }
+
+      let formattedValue;
+      if (Array.isArray(value) && value.every((item: any) => typeof item === "string")) {
+        formattedValue = value.map((item: string) => `${item}`).join(' ');
+        formattedValue = `%w[${formattedValue}]`;
+      } else if (typeof value === 'object' && value !== null) {
+        formattedValue = this.convertJsonToRubyHash(value, indentSize, indentLevel + 1).trim();
+      } else if (typeof value === 'string' && value !== 'date-time') {
+        formattedValue = `:${value}`;
+      } else if (value === null) {
+        formattedValue = 'nil';
+      } else {
+        formattedValue = JSON.stringify(value).replace(/"([^"]+)"/g, "'$1'");
+      }
+
+      rubyHash += `${indent}${key}: ${formattedValue},\n`;
+    }
+
+    // remove ',' from last element
+    rubyHash = rubyHash.replace(/,(?=[^,]*$)/, '');
+
+    if ((/\{\n$/).test(rubyHash)) {
+      // handle empty json object to make rubocop happy
+      rubyHash = rubyHash.trimRight();
+      rubyHash += '}';
+    } else {
+      rubyHash += `${indent.slice(0, -indentSize)}}`;
+    }
+
+    return rubyHash;
+  }
+
+  private convertPlurarlToSingularWord(pluralWord: string): string {
+    const irregularWords: { [key: string]: string } = {
+      children: "child",
+    };
+
+    const rules: [RegExp, string][] = [
+      [/ies$/, "y"],
+      [/es$/, ""],
+      [/s$/, ""],
+    ];
+
+    // check if the word is an irregular plural
+    if (irregularWords.hasOwnProperty(pluralWord.toLowerCase())) {
+      return irregularWords[pluralWord.toLowerCase()];
+    }
+
+    // apply the pluralization rules
+    for (const [rule, replacement] of rules) {
+      if (rule.test(pluralWord)) {
+        return pluralWord.replace(rule, replacement);
+      }
+    }
+
+    return pluralWord;
   }
 }

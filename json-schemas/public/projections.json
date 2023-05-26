@@ -1,143 +1,200 @@
 {
-  "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "/public/projections.json",
+  "$id": "projections.json",
   "title": "projections",
-  "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time)",
-  "properties": {
-    "id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: bigint. Default value: nextval('projections_id_seq'::regclass)"
-    },
-    "new_player_id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    },
-    "line_score": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: numeric. Default value: null"
-    },
-    "risk_exposure": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: numeric. Default value: null"
-    },
-    "created_at": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: timestamp without time zone. Default value: null"
-    },
-    "updated_at": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: timestamp without time zone. Default value: null"
-    },
-    "start_time": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: timestamp without time zone. Default value: null"
-    },
-    "description": {
-      "type": "string",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: character varying. Default value: null"
-    },
-    "status": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: 0"
-    },
-    "score_id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    },
-    "board_time": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: timestamp without time zone. Default value: null"
-    },
-    "rank": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    },
-    "league_id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    },
-    "is_promo": {
-      "type": "boolean",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: boolean. Default value: false"
-    },
-    "end_time": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: timestamp without time zone. Default value: null"
-    },
-    "tv_channel": {
-      "type": "string",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: character varying. Default value: null"
-    },
-    "starting_pitcher": {
-      "type": "string",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: character varying. Default value: null"
-    },
-    "subleague_id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    },
-    "position_id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    },
-    "duration_id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    },
-    "game_id": {
-      "type": "string",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: character varying. Default value: null"
-    },
-    "stat_type_id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    },
-    "projection_type_id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    },
-    "refundable": {
-      "type": "boolean",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: boolean. Default value: true"
-    },
-    "flash_sale_line_score": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: numeric. Default value: null"
-    },
-    "custom_image": {
-      "type": "string",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: character varying. Default value: null"
-    },
-    "lock_version": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: 0"
-    },
-    "board_error_start": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: timestamp without time zone. Default value: null"
-    },
-    "board_error_end": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: timestamp without time zone. Default value: null"
-    },
-    "board_error_reason_id": {
-      "type": "number",
-      "description": "Sat May 20 2023 12:28:05 GMT-0700 (Pacific Daylight Time). Database type: integer. Default value: null"
-    }
-  },
+  "type": "object",
   "required": [
+    "id",
     "new_player_id",
     "line_score",
     "created_at",
     "updated_at"
   ],
-  "type": "object"
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "new_player_id": {
+      "type": "number"
+    },
+    "line_score": {
+      "type": "number"
+    },
+    "risk_exposure": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "start_time": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "status": {
+      "type": "number",
+      "default": 0
+    },
+    "score_id": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "board_time": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null
+    },
+    "rank": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "league_id": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "is_promo": {
+      "type": "boolean",
+      "default": true
+    },
+    "end_time": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null
+    },
+    "tv_channel": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "starting_pitcher": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "subleague_id": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "position_id": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "duration_id": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "game_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "stat_type_id": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "projection_type_id": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "refundable": {
+      "type": "boolean",
+      "default": true
+    },
+    "flash_sale_line_score": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    },
+    "custom_image": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "default": null
+    },
+    "lock_version": {
+      "type": "number",
+      "default": 0
+    },
+    "board_error_start": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null
+    },
+    "board_error_end": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time",
+      "default": null
+    },
+    "board_error_reason_id": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "default": null
+    }
+  }
 }
