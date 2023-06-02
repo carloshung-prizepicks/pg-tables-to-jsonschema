@@ -230,7 +230,7 @@ export class SchemaConverter {
     const entityName = entity.name;
     const baseName = entityName.replace( `${schemaName}_`, '' );
     const jsonSchema: JSONSchema7 = {
-      $schema: 'http://json-schema.org/draft-07/schema#',
+      $schema: 'http://json-schema.org/draft/schema#',
       $id: `${entityName}.json`,
       title: baseName,
       type: 'object',
@@ -240,7 +240,7 @@ export class SchemaConverter {
 
     // define json api schema
     const jsonApiSchema: JSONSchema7 = {
-      $schema: 'http://json-schema.org/draft-07/schema#',
+      $schema: 'http://json-schema.org/draft/schema#',
       $id: `${entityName}.json`,
       title: baseName,
       type: 'object',
@@ -250,6 +250,9 @@ export class SchemaConverter {
         }
       }
     };
+
+    // define json api list schema
+    const jsonApiListSchema = Object.assign({}, jsonApiSchema);
 
     const columns = entity.columns;
     for (const column of columns) {
@@ -269,8 +272,7 @@ export class SchemaConverter {
       }
     }
 
-    // Set json api schema
-    (jsonApiSchema.properties as {[key: string]: JSONSchema7Definition})['data'] = {
+    const jsonApiObjectSchema: any = {
       type: 'object',
       required: [ 'id', 'type', 'attributes' ],
       properties: {
@@ -288,19 +290,38 @@ export class SchemaConverter {
           properties: jsonSchema.properties
         }
       }
-    }
+    };
+
+    // Set json api schema
+    (jsonApiSchema.properties as {[key: string]: JSONSchema7Definition})['data'] = jsonApiObjectSchema;
+
+    // Set json api list schema
+    (jsonApiListSchema.properties as {[key: string]: JSONSchema7Definition})['data'] = {
+      type: 'array',
+      items: [ jsonApiObjectSchema ]
+    };
 
     // Write to file if requested
     //
     if (outputFolder) {
       const folderName = join(outputFolder, schemaName);
       await mkdirp(folderName);
+
       let fileName = join(folderName, `${entityName}.json`);
       await jsonfile.writeFile(fileName, jsonSchema, { spaces: indentSpaces });
+
       fileName = join(folderName, `${entityName}-api.json`);
       await jsonfile.writeFile(fileName, jsonApiSchema, { spaces: indentSpaces });
-      fileName = join(folderName, `${entityName}-rswag.rb`);
-      const rubyHash = this.convertJsonToRubyHash(jsonApiSchema, indentSpaces);
+
+      fileName = join(folderName, `${entityName}-swag.rb`);
+      const rubyHash = this.convertJsonToRubyHash(jsonApiSchema, indentSpaces) + '\n';
+      await fs.writeFileSync(fileName, rubyHash);
+
+      fileName = join(folderName, `${entityName}-list-api.json`);
+      await jsonfile.writeFile(fileName, jsonApiListSchema, { spaces: indentSpaces });
+
+      fileName = join(folderName, `${entityName}-list-swag.rb`);
+      const rubyListHash = this.convertJsonListToRubyHash(jsonApiListSchema, indentSpaces);
       await fs.writeFileSync(fileName, rubyHash);
     }
 
@@ -614,5 +635,21 @@ export class SchemaConverter {
     }
 
     return pluralWord;
+  }
+
+  private convertJsonListToRubyHash(json: any, indentSize = 2, indentLevel = 1): string {
+    const rubyHash = this.convertJsonToRubyHash(json.properties.data.items, indentSize, indentLevel);
+    const rubyHashList = `{
+      type: :object,
+      required: %w[data],
+      properties: {
+        data: {
+          type: :array,
+          items: [ ${rubyHash} ]
+        }
+      }
+    }`;
+
+    return rubyHashList;
   }
 }
