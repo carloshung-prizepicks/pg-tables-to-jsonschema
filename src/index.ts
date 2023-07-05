@@ -252,7 +252,7 @@ export class SchemaConverter {
     };
 
     // define json api list schema
-    const jsonApiListSchema = Object.assign({}, jsonApiSchema);
+    const jsonApiListSchema = JSON.parse(JSON.stringify(jsonApiSchema));
 
     const columns = entity.columns;
     for (const column of columns) {
@@ -321,8 +321,8 @@ export class SchemaConverter {
       await jsonfile.writeFile(fileName, jsonApiListSchema, { spaces: indentSpaces });
 
       fileName = join(folderName, `${entityName}-list-swag.rb`);
-      const rubyListHash = this.convertJsonListToRubyHash(jsonApiListSchema, indentSpaces);
-      await fs.writeFileSync(fileName, rubyHash);
+      const rubyListHash = this.convertJsonListToRubyHash(jsonApiListSchema, indentSpaces, 5);
+      await fs.writeFileSync(fileName, rubyListHash);
     }
 
     return jsonSchema;
@@ -623,7 +623,7 @@ export class SchemaConverter {
     ];
 
     // check if the word is an irregular plural
-    if (irregularWords.hasOwnProperty(pluralWord.toLowerCase())) {
+    if (Object.prototype.hasOwnProperty.call(irregularWords, pluralWord.toLocaleLowerCase())) {
       return irregularWords[pluralWord.toLowerCase()];
     }
 
@@ -638,17 +638,20 @@ export class SchemaConverter {
   }
 
   private convertJsonListToRubyHash(json: any, indentSize = 2, indentLevel = 1): string {
-    const rubyHash = this.convertJsonToRubyHash(json.properties.data.items, indentSize, indentLevel);
-    const rubyHashList = `{
-      type: :object,
-      required: %w[data],
-      properties: {
-        data: {
-          type: :array,
-          items: [ ${rubyHash} ]
-        }
-      }
-    }`;
+    const rubyHash = this.convertJsonToRubyHash(json.properties.data.items[0], indentSize, indentLevel);
+    const rubyHashList =
+`{
+  type: :object,
+  required: %w[data],
+  properties: {
+    data: {
+      type: :array,
+      items: [
+        ${rubyHash}
+      ]
+    }
+  }
+}`;
 
     return rubyHashList;
   }
